@@ -88,25 +88,36 @@ class _CartPrintState extends State<CartPrint> {
               String namaMenu = "";
               String qtyMenu = "";
               String hargaMenu = "";
-              String tothar = "";
+              int banyakMakanan = 0;
+              int banyakMinum = 0;
+              int banyakCemil = 0;
+              int total_cart = 0;
+              int total_minum = 0;
+              int total_cemilan = 0;
+
               for (var element in value.cart) {
                 namaMenu = "$namaMenu\n${element.name}\n";
                 qtyMenu = "$qtyMenu\n${element.qty}\n";
+                banyakMakanan += element.qty;
                 hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                tothar = "$tothar ${element.price * element.qty}";
+                total_cart += element.price * element.qty;
               }
               for (var element in value.minum) {
                 namaMenu = "$namaMenu\n${element.name}\n";
                 qtyMenu = "$qtyMenu\n${element.qty}\n";
+                banyakMinum += element.qty;
                 hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                tothar = "$tothar ${element.price * element.qty}";
+                total_minum += element.price * element.qty;
               }
               for (var element in value.cemil) {
                 namaMenu = "$namaMenu\n${element.name}\n";
                 qtyMenu = "$qtyMenu\n${element.qty}\n";
+                banyakCemil += element.qty;
                 hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                tothar = "$tothar ${element.price * element.qty}";
+                total_cemilan += element.price * element.qty;
               }
+              int total_qty = banyakMakanan + banyakMinum + banyakCemil;
+              int total_pesanan = total_cart + total_minum + total_cemilan;
               return Column(
                 children: [
                   head(),
@@ -115,19 +126,13 @@ class _CartPrintState extends State<CartPrint> {
                     thickness: 1,
                     height: 25,
                   ),
-                  listPesanan(
-                      context, namaMenu, qtyMenu, hargaMenu, printer, tothar),
+                  listPesanan(context, namaMenu, qtyMenu, hargaMenu, printer),
                   Divider(
                     color: Colors.grey.shade400,
                     thickness: 1.5,
                     height: 35,
                   ),
-                  totalPesan(hargaMenu, cart, tothar),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       print(tothar);
-                  //     },
-                  //     child: Text("data"))
+                  totalPesan(total_qty, total_pesanan),
                 ],
               );
             }),
@@ -149,7 +154,7 @@ class _CartPrintState extends State<CartPrint> {
 }
 
 Widget listPesanan(BuildContext context, String namaMenu, String qtyMenu,
-    String hargaMenu, BlueThermalPrinter printer, String tothar) {
+    String hargaMenu, BlueThermalPrinter printer) {
   return Column(
     children: [
       Row(
@@ -172,7 +177,7 @@ Widget listPesanan(BuildContext context, String namaMenu, String qtyMenu,
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Text(
               hargaMenu,
               style: GoogleFonts.montserrat(
@@ -215,7 +220,7 @@ Widget head() {
         ),
       ),
       Expanded(
-        flex: 3,
+        flex: 4,
         child: Text(
           "Harga",
           style:
@@ -226,19 +231,32 @@ Widget head() {
   );
 }
 
-Widget totalPesan(String hargaMenu, CartProvider cart, String tothar) {
+Widget totalPesan(int total_qty, int total_pesanan) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(
-        "Total",
-        style:
-            GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600),
+      Expanded(
+        flex: 8,
+        child: Text(
+          "Total",
+          style:
+              GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
       ),
-      Text(
-        "${tothar}",
-        style:
-            GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600),
+      Expanded(
+          flex: 3,
+          child: Text(
+            '${total_qty}',
+            style: GoogleFonts.montserrat(
+                fontSize: 14, fontWeight: FontWeight.w600),
+          )),
+      Expanded(
+        flex: 4,
+        child: Text(
+          "Rp. ${total_pesanan}",
+          style:
+              GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
       ),
     ],
   );
