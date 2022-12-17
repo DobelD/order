@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:order_food/cart_print.dart';
 import 'package:order_food/home.dart';
 import 'package:order_food/providers/provider.dart';
+import 'package:order_food/setting.dart';
 import 'package:order_food/splash.dart';
 import 'package:provider/provider.dart';
 
@@ -16,16 +17,16 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (context) => CartProvider())],
       child: MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.amber),
-        debugShowCheckedModeBanner: false,
-        home: const Splash(),
-        initialRoute: "/splas",
-        routes: {
-          "/splas": (context) => Splash(),
-          "/home": (context) => Home(),
-          "/cart": (context) => CartPrint()
-        },
-      ),
+          theme: ThemeData(primarySwatch: Colors.amber),
+          debugShowCheckedModeBanner: false,
+          home: const Splash(),
+          initialRoute: "/splas",
+          routes: {
+            "/splas": (context) => Splash(),
+            "/home": (context) => Home(),
+            "/cart": (context) => CartPrint(),
+            "/setting": (context) => Setting()
+          }),
     );
   }
 }

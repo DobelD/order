@@ -1,10 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconly/iconly.dart';
 import 'package:order_food/pages/cemilan.dart';
 import 'package:order_food/pages/makanan.dart';
 import 'package:order_food/pages/minum.dart';
 import 'package:order_food/providers/provider.dart';
+import 'package:order_food/setting.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -48,12 +50,20 @@ class _HomeState extends State<Home> {
         ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          centerTitle: true,
           title: Text(
             "Daftar Menu",
             style: GoogleFonts.montserrat(
                 fontSize: 22, color: Colors.white, fontWeight: FontWeight.w600),
           ),
+          actions: [
+            IconButton(
+                onPressed: () => Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => Setting())),
+                icon: Icon(
+                  IconlyBold.setting,
+                  color: Colors.white,
+                ))
+          ],
           bottom: TabBar(
             tabs: [
               Text(

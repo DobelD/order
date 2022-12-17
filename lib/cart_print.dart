@@ -31,130 +31,109 @@ class _CartPrintState extends State<CartPrint> {
   Widget build(BuildContext context) {
     final cart = ModalRoute.of(context)!.settings.arguments as CartProvider;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 1,
-        actions: [
-          Row(
-            children: [
-              SizedBox(
-                child: DropdownButton<BluetoothDevice>(
-                    underline: SizedBox(),
-                    value: selectedDevice,
-                    hint: Text("Select printer "),
-                    iconEnabledColor: Colors.black,
-                    style: GoogleFonts.montserrat(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500),
-                    items: device
-                        .map((e) => DropdownMenuItem(
-                              child: Text(e.name!),
-                              value: e,
-                            ))
-                        .toList(),
-                    onChanged: (device) {
-                      setState(() {
-                        selectedDevice = device;
-                      });
-                    }),
-              ),
-              SizedBox(
-                child: IconButton(
-                  onPressed: () async {
-                    await printer.connect(selectedDevice!);
-                    if (selectedDevice!.connected) {
-                      await ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Berhasil conect')));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Gagal conect')));
-                    }
-                  },
-                  icon: Icon(
-                    Icons.print_rounded,
-                    color: Colors.black,
-                  ),
-                ),
-              )
-            ],
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-        child: Column(
-          children: [
-            Consumer<CartProvider>(builder: (context, value, _) {
-              String namaMenu = "";
-              String qtyMenu = "";
-              String hargaMenu = "";
-              int banyakMakanan = 0;
-              int banyakMinum = 0;
-              int banyakCemil = 0;
-              int total_cart = 0;
-              int total_minum = 0;
-              int total_cemilan = 0;
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Consumer<CartProvider>(builder: (context, value, _) {
+                String namaMenu = "";
+                String qtyMenu = "";
+                String hargaMenu = "";
+                int banyakMakanan = 0;
+                int banyakMinum = 0;
+                int banyakCemil = 0;
+                int total_cart = 0;
+                int total_minum = 0;
+                int total_cemilan = 0;
 
-              for (var element in value.cart) {
-                namaMenu = "$namaMenu\n${element.name}\n";
-                qtyMenu = "$qtyMenu\n${element.qty}\n";
-                banyakMakanan += element.qty;
-                hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                total_cart += element.price * element.qty;
-              }
-              for (var element in value.minum) {
-                namaMenu = "$namaMenu\n${element.name}\n";
-                qtyMenu = "$qtyMenu\n${element.qty}\n";
-                banyakMinum += element.qty;
-                hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                total_minum += element.price * element.qty;
-              }
-              for (var element in value.cemil) {
-                namaMenu = "$namaMenu\n${element.name}\n";
-                qtyMenu = "$qtyMenu\n${element.qty}\n";
-                banyakCemil += element.qty;
-                hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
-                total_cemilan += element.price * element.qty;
-              }
-              int total_qty = banyakMakanan + banyakMinum + banyakCemil;
-              int total_pesanan = total_cart + total_minum + total_cemilan;
-              return Column(
-                children: [
-                  head(),
-                  Divider(
-                    color: Colors.grey.shade400,
-                    thickness: 1,
-                    height: 25,
-                  ),
-                  listPesanan(context, namaMenu, qtyMenu, hargaMenu, printer),
-                  Divider(
-                    color: Colors.grey.shade400,
-                    thickness: 1.5,
-                    height: 35,
-                  ),
-                  totalPesan(total_qty, total_pesanan),
-                ],
-              );
-            }),
-          ],
+                for (var element in value.cart) {
+                  namaMenu = "$namaMenu\n${element.name}\n";
+                  qtyMenu = "$qtyMenu\n${element.qty}\n";
+                  banyakMakanan += element.qty;
+                  hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
+                  total_cart += element.price * element.qty;
+                }
+                for (var element in value.minum) {
+                  namaMenu = "$namaMenu\n${element.name}\n";
+                  qtyMenu = "$qtyMenu\n${element.qty}\n";
+                  banyakMinum += element.qty;
+                  hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
+                  total_minum += element.price * element.qty;
+                }
+                for (var element in value.cemil) {
+                  namaMenu = "$namaMenu\n${element.name}\n";
+                  qtyMenu = "$qtyMenu\n${element.qty}\n";
+                  banyakCemil += element.qty;
+                  hargaMenu = "$hargaMenu\n Rp. ${element.price}\n";
+                  total_cemilan += element.price * element.qty;
+                }
+                int total_qty = banyakMakanan + banyakMinum + banyakCemil;
+                int total_pesanan = total_cart + total_minum + total_cemilan;
+                return Column(
+                  children: [
+                    head(),
+                    Divider(
+                      color: Colors.grey.shade400,
+                      thickness: 1,
+                      height: 25,
+                    ),
+                    // , printer
+                    listPesanan(context, namaMenu, qtyMenu, hargaMenu),
+                    Divider(
+                      color: Colors.grey.shade400,
+                      thickness: 1.5,
+                      height: 35,
+                    ),
+                    totalPesan(total_qty, total_pesanan),
+                    printStruk(context, namaMenu, qtyMenu, hargaMenu,
+                        total_pesanan, printer)
+                  ],
+                );
+              }),
+            ],
+          ),
         ),
       ),
-      bottomSheet: Container(
-          padding: EdgeInsets.all(20),
-          width: double.infinity,
-          height: 100,
-          child: ElevatedButton(
-            onPressed: () {
-              printer.printNewLine();
-            },
-            child: Text('Cetak Struk'),
-          )),
     );
   }
 }
 
-Widget listPesanan(BuildContext context, String namaMenu, String qtyMenu,
-    String hargaMenu, BlueThermalPrinter printer) {
+Widget printStruk(BuildContext context, String namaMenu, String qtyMenu,
+    String hargaMenu, int total_pesanan, BlueThermalPrinter printer) {
+  return Align(
+    alignment: Alignment.bottomCenter,
+    child: Container(
+        padding: EdgeInsets.all(20),
+        width: double.infinity,
+        height: 100,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12))),
+          onPressed: () async {
+            if ((await printer.isConnected)!) {
+              printer.printCustom("$namaMenu $qtyMenu $hargaMenu", 200, 0);
+              printer.printNewLine();
+            }
+          },
+          child: Text(
+            'Bayar',
+            style: GoogleFonts.montserrat(
+                fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+        )),
+  );
+}
+
+// , BlueThermalPrinter printer
+Widget listPesanan(
+    BuildContext context, String namaMenu, String qtyMenu, String hargaMenu) {
   return Column(
     children: [
       Row(

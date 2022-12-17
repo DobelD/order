@@ -166,7 +166,8 @@ Widget makanTab(BuildContext context) {
                           )
                         ],
                       ));
-                });
+                }
+                );
           } else {
             return const Center(
               child: Text('Tidak ada data'),
